@@ -1,0 +1,136 @@
+stock-prediction-system/
+│
+├── pyproject.toml                 # Poetry/pip dependencies
+├── setup.py                       # Package setup
+├── .env.example                   # Environment variables template
+├── .gitignore
+├── README.md
+├── docker-compose.yml             # Ollama, DuckDB services
+│
+├── src/
+│   ├── __init__.py
+│   │
+│   ├── config/
+│   │   ├── __init__.py
+│   │   ├── settings.py           # Pydantic settings management
+│   │   └── logging_config.py     # Centralized logging
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── schemas.py            # Pydantic models for data validation
+│   │   ├── prediction.py         # ML model classes
+│   │   └── entities.py           # Domain entities
+│   │
+│   ├── data/
+│   │   ├── __init__.py
+│   │   ├── collectors/
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py           # Abstract base collector
+│   │   │   ├── polygon_collector.py
+│   │   │   ├── twitter_collector.py
+│   │   │   └── reddit_collector.py
+│   │   │
+│   │   ├── processors/
+│   │   │   ├── __init__.py
+│   │   │   ├── cleaner.py        # Data cleaning
+│   │   │   ├── feature_engineer.py
+│   │   │   └── validator.py      # Data validation
+│   │   │
+│   │   └── storage/
+│   │       ├── __init__.py
+│   │       ├── duckdb_manager.py
+│   │       └── supabase_manager.py
+│   │
+│   ├── ml/
+│   │   ├── __init__.py
+│   │   ├── preprocessors/
+│   │   │   ├── __init__.py
+│   │   │   ├── scaler.py
+│   │   │   └── encoder.py
+│   │   │
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── lstm_model.py
+│   │   │   ├── transformer_model.py
+│   │   │   └── ensemble.py
+│   │   │
+│   │   ├── training/
+│   │   │   ├── __init__.py
+│   │   │   ├── trainer.py
+│   │   │   └── evaluator.py
+│   │   │
+│   │   └── inference/
+│   │       ├── __init__.py
+│   │       └── predictor.py
+│   │
+│   ├── llm/
+│   │   ├── __init__.py
+│   │   ├── ollama_client.py      # Ollama integration
+│   │   ├── prompts.py            # Prompt templates
+│   │   └── sentiment_analyzer.py # LLM-based analysis
+│   │
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── routes/
+│   │   │   ├── __init__.py
+│   │   │   ├── predictions.py
+│   │   │   ├── data.py
+│   │   │   └── health.py
+│   │   │
+│   │   ├── dependencies.py       # FastAPI dependencies
+│   │   └── middleware.py         # Custom middleware
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── prediction_service.py
+│   │   ├── data_pipeline_service.py
+│   │   └── notification_service.py
+│   │
+│   └── utils/
+│       ├── __init__.py
+│       ├── exceptions.py         # Custom exceptions
+│       ├── decorators.py         # Retry, cache decorators
+│       ├── validators.py         # Type validators
+│       └── helpers.py
+│
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py               # Pytest fixtures
+│   │
+│   ├── unit/
+│   │   ├── __init__.py
+│   │   ├── test_collectors.py
+│   │   ├── test_processors.py
+│   │   ├── test_models.py
+│   │   └── test_services.py
+│   │
+│   ├── integration/
+│   │   ├── __init__.py
+│   │   ├── test_duckdb.py
+│   │   ├── test_supabase.py
+│   │   └── test_ollama.py
+│   │
+│   └── e2e/
+│       ├── __init__.py
+│       └── test_prediction_pipeline.py
+│
+├── scripts/
+│   ├── setup_db.py               # Initialize DuckDB
+│   ├── migrate_supabase.py       # Supabase migrations
+│   ├── train_model.py            # Training script
+│   └── backfill_data.py          # Historical data loading
+│
+├── notebooks/
+│   ├── exploration.ipynb         # Data exploration
+│   └── model_experiments.ipynb   # Model testing
+│
+├── data/                          # Git-ignored
+│   ├── raw/
+│   ├── processed/
+│   └── models/
+│
+├── logs/                          # Git-ignored
+│
+└── alembic/                       # If using Supabase with migrations
+    ├── versions/
+    └── env.py
