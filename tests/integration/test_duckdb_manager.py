@@ -1,4 +1,5 @@
 """Tests for DuckDB manager."""
+
 from datetime import datetime, timedelta
 from decimal import Decimal
 

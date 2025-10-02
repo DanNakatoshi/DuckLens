@@ -1,0 +1,90 @@
+{
+  "cash": 772.45,
+  "positions": {
+    "UNH": {
+      "symbol": "UNH",
+      "quantity": 5,
+      "price_paid": 309.416,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "BABA": {
+      "symbol": "BABA",
+      "quantity": 20,
+      "price_paid": 179.47,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "COP": {
+      "symbol": "COP",
+      "quantity": 20,
+      "price_paid": 123.6585,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "UPS": {
+      "symbol": "UPS",
+      "quantity": 20,
+      "price_paid": 153.4,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "BTC": {
+      "symbol": "BTC",
+      "quantity": 100,
+      "price_paid": 50.519,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "IREN": {
+      "symbol": "IREN",
+      "quantity": 100,
+      "price_paid": 44.675,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "ETH": {
+      "symbol": "ETH",
+      "quantity": 100,
+      "price_paid": 39.1546,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "INTC": {
+      "symbol": "INTC",
+      "quantity": 50,
+      "price_paid": 34.795,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "CSIQ": {
+      "symbol": "CSIQ",
+      "quantity": 266,
+      "price_paid": 19.6339,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "EPSM": {
+      "symbol": "EPSM",
+      "quantity": 30,
+      "price_paid": 37.91,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "OPEN": {
+      "symbol": "OPEN",
+      "quantity": 400,
+      "price_paid": 8.3299,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    },
+    "NEON": {
+      "symbol": "NEON",
+      "quantity": 220,
+      "price_paid": 4.32691,
+      "purchase_date": "2025-10-01",
+      "notes": "Imported from E*TRADE"
+    }
+  },
+  "last_updated": "2025-10-01 17:02:23"
+}

@@ -1,0 +1,117 @@
+D:\GitHub\DuckLens\src\ml\catboost_entry_filter.py:98: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql_query(
+================================================================================
+STRATEGY COMPARISON: SPY (2020-2025)
+================================================================================
+
+================================================================================
+STEP 1: TRAIN CATBOOST ENTRY FILTER
+================================================================================
+
+Training CatBoost Entry Filter...
+Training samples: 787
+Profitable entries: 391 (49.7%)
+Unprofitable entries: 396 (50.3%)
+
+Fold 1/3:
+0:	test: 0.5202139	best: 0.5202139 (0)	total: 139ms	remaining: 41.5s
+100:	test: 0.6034168	best: 0.6065467 (97)	total: 245ms	remaining: 483ms
+200:	test: 0.5650756	best: 0.6065467 (97)	total: 338ms	remaining: 166ms
+299:	test: 0.5500782	best: 0.6065467 (97)	total: 433ms	remaining: 0us
+
+bestTest = 0.6065466875
+bestIteration = 97
+
+Shrink model to first 98 iterations.
+  Train accuracy: 0.985
+  Val accuracy: 0.332
+
+Fold 2/3:
+0:	test: 0.7707213	best: 0.7707213 (0)	total: 2.03ms	remaining: 608ms
+100:	test: 0.8767921	best: 0.9169467 (6)	total: 115ms	remaining: 227ms
+200:	test: 0.8669355	best: 0.9169467 (6)	total: 229ms	remaining: 113ms
+299:	test: 0.8616711	best: 0.9169467 (6)	total: 338ms	remaining: 0us
+
+bestTest = 0.9169466846
+bestIteration = 6
+
+Shrink model to first 7 iterations.
+  Train accuracy: 0.904
+  Val accuracy: 0.531
+
+Fold 3/3:
+0:	test: 0.6280488	best: 0.6280488 (0)	total: 2.03ms	remaining: 608ms
+100:	test: 0.6105049	best: 0.7081194 (8)	total: 118ms	remaining: 233ms
+200:	test: 0.6067608	best: 0.7081194 (8)	total: 226ms	remaining: 111ms
+299:	test: 0.5951006	best: 0.7081194 (8)	total: 331ms	remaining: 0us
+
+bestTest = 0.7081193838
+bestIteration = 8
+
+Shrink model to first 9 iterations.
+  Train accuracy: 0.885
+  Val accuracy: 0.541
+
+Training final model on all data...
+0:	total: 1.74ms	remaining: 520ms
+100:	total: 120ms	remaining: 237ms
+200:	total: 222ms	remaining: 109ms
+299:	total: 321ms	remaining: 0us
+
+============================================================
+FINAL MODEL PERFORMANCE
+============================================================
+Accuracy: 0.999
+
+Classification Report:
+              precision    recall  f1-score   support
+
+        Loss       1.00      1.00      1.00       396
+      Profit       1.00      1.00      1.00       391
+
+    accuracy                           1.00       787
+   macro avg       1.00      1.00      1.00       787
+weighted avg       1.00      1.00      1.00       787
+
+
+Top 10 Most Important Features:
+        feature  importance
+         ema_12    9.676230
+        sma_200    9.540179
+       bb_lower    7.762757
+            obv    7.210271
+distance_sma_50    5.821482
+           macd    5.245253
+ volatility_20d    4.712703
+         sma_50    3.759898
+       bb_width    3.600149
+   volume_ma_20    3.507985
+
+Model saved to: models\entry_filter_20251001_122811.pkl
+
+================================================================================
+BACKTESTING: Rule-Based (Baseline)
+================================================================================
+
+
+================================================================================
+BACKTESTING: CatBoost Filter (60% threshold)
+================================================================================
+
+
+================================================================================
+BACKTESTING: CatBoost Filter (70% threshold - Stricter)
+================================================================================
+
+
+
+================================================================================
+STRATEGY COMPARISON RESULTS
+================================================================================
+Traceback (most recent call last):
+  File "D:\GitHub\DuckLens\scripts\compare_strategies_spy.py", line 425, in <module>
+    main()
+  File "D:\GitHub\DuckLens\scripts\compare_strategies_spy.py", line 361, in main
+    str(db.conn.execute(first_price_query, [test_start]).fetchone()[0])
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+TypeError: 'NoneType' object is not subscriptable

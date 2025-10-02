@@ -1,0 +1,91 @@
+================================================================================
+TREND-CHANGE BACKTEST: SPY ONLY (IMPROVED)
+================================================================================
+
+Ticker: SPY (S&P 500 ETF)
+Period: 2020-01-01 to 2025-10-01
+Starting Capital: $100,000.00
+Min Confidence: 70%
+Min ADX (Trend Strength): 25.0
+Confirmation Days: 2
+Block High-Impact Events: True
+
+Strategy:
+  BUY: Trend changes to BULLISH (confirmed + strong)
+  SELL: Trend changes to BEARISH (confirmed + strong)
+  DON'T TRADE: Weak trend, unconfirmed, or high-impact event
+
+================================================================================
+
+Data Check: 1255 trading days available
+
+================================================================================
+RUNNING BACKTEST
+================================================================================
+
+Progress: 50/1255 | Date: 2020-12-10 | Value: $100,000.00 | Trades: 0
+Progress: 100/1255 | Date: 2021-02-24 | Value: $100,000.00 | Trades: 0
+Progress: 150/1255 | Date: 2021-05-06 | Value: $100,000.00 | Trades: 0
+Progress: 200/1255 | Date: 2021-07-19 | Value: $100,000.00 | Trades: 0
+Progress: 250/1255 | Date: 2021-09-28 | Value: $100,000.00 | Trades: 0
+Progress: 300/1255 | Date: 2021-12-08 | Value: $100,000.00 | Trades: 0
+Progress: 350/1255 | Date: 2022-02-18 | Value: $100,000.00 | Trades: 0
+Progress: 400/1255 | Date: 2022-05-03 | Value: $100,000.00 | Trades: 0
+Progress: 450/1255 | Date: 2022-07-15 | Value: $100,000.00 | Trades: 0
+Progress: 500/1255 | Date: 2022-09-26 | Value: $100,000.00 | Trades: 0
+Progress: 550/1255 | Date: 2022-12-06 | Value: $100,000.00 | Trades: 0
+Progress: 600/1255 | Date: 2023-02-17 | Value: $100,000.00 | Trades: 0
+Progress: 650/1255 | Date: 2023-05-02 | Value: $100,000.00 | Trades: 0
+Progress: 700/1255 | Date: 2023-07-14 | Value: $100,000.00 | Trades: 0
+Progress: 750/1255 | Date: 2023-09-25 | Value: $100,000.00 | Trades: 0
+Progress: 800/1255 | Date: 2023-12-05 | Value: $100,000.00 | Trades: 0
+Progress: 850/1255 | Date: 2024-02-16 | Value: $100,000.00 | Trades: 0
+Progress: 900/1255 | Date: 2024-04-30 | Value: $100,000.00 | Trades: 0
+Progress: 950/1255 | Date: 2024-07-12 | Value: $100,000.00 | Trades: 0
+Progress: 1000/1255 | Date: 2024-09-23 | Value: $100,000.00 | Trades: 0
+Progress: 1050/1255 | Date: 2024-12-03 | Value: $100,000.00 | Trades: 0
+Progress: 1100/1255 | Date: 2025-02-18 | Value: $100,000.00 | Trades: 0
+Progress: 1150/1255 | Date: 2025-04-30 | Value: $100,000.00 | Trades: 0
+Progress: 1200/1255 | Date: 2025-07-14 | Value: $100,000.00 | Trades: 0
+Progress: 1250/1255 | Date: 2025-09-23 | Value: $100,000.00 | Trades: 0
+
+================================================================================
+BACKTEST RESULTS
+================================================================================
+
+CAPITAL
+--------------------------------------------------
+Starting: $100,000.00
+Ending:   $100,000.00
+Return:   $0.00 (+0.00%)
+
+BUY & HOLD COMPARISON
+--------------------------------------------------
+SPY Buy & Hold: +97.66%
+Strategy Alpha: -97.66%
+
+TRADES
+--------------------------------------------------
+Total:    0
+Winners:  0
+Losers:   0
+Win Rate: 0.0%
+Avg Holding: 0.0 days
+
+RISK METRICS
+--------------------------------------------------
+Max Drawdown:  0.00%
+Profit Factor: 0.00
+Avg Win:       $0.00
+Avg Loss:      $0.00
+
+SIGNALS
+--------------------------------------------------
+Signals Generated: 0
+Blocked by Events: 2
+Event Block Rate:  100.0%
+
+[LOG] Detailed reasoning saved to: trend_backtest_spy.log
+
+================================================================================
+

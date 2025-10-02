@@ -96,9 +96,7 @@ def test_network_error_handling() -> None:
     collector = PolygonCollector()
 
     # Mock the client to raise a connection error
-    with patch.object(
-        collector.client, "get", side_effect=httpx.ConnectError("Connection failed")
-    ):
+    with patch.object(collector.client, "get", side_effect=httpx.ConnectError("Connection failed")):
         # The retry decorator wraps DataCollectionError in RetryError after all retries fail
         with pytest.raises(RetryError):
             collector.get_ticker_details("AAPL")

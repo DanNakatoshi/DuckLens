@@ -1,0 +1,121 @@
+# 100 Growth Stocks to Add
+
+
+## AI_CHIPS (8 stocks)
+AVGO
+QCOM
+MRVL
+ARM
+ASML
+AMAT
+LRCX
+KLAC
+
+## AI_SOFTWARE (7 stocks)
+MSFT
+META
+CRM
+NOW
+SNOW
+PLTR
+NET
+
+## EV_MAKERS (5 stocks)
+RIVN
+LCID
+NIO
+LI
+XPEV
+
+## CLEAN_ENERGY (7 stocks)
+ENPH
+SEDG
+RUN
+FSLR
+ALB
+SQM
+PLUG
+
+## PHARMA (9 stocks)
+LLY
+NVO
+JNJ
+ABBV
+GILD
+REGN
+VRTX
+MRNA
+BNTX
+
+## MEDICAL_DEVICES (5 stocks)
+ISRG
+EW
+SYK
+BSX
+MDT
+
+## PAYMENTS (5 stocks)
+V
+MA
+PYPL
+SQ
+ADYEN
+
+## FINTECH (4 stocks)
+HOOD
+SOFI
+AFRM
+NU
+
+## ECOMMERCE (4 stocks)
+AMZN
+SHOP
+MELI
+SE
+
+## CONSUMER (5 stocks)
+NKE
+LULU
+SBUX
+MCD
+CMG
+
+## INDUSTRIAL (5 stocks)
+CAT
+DE
+GE
+RTX
+LMT
+
+## LOGISTICS (2 stocks)
+FDX
+URI
+
+## REITS (4 stocks)
+PLD
+AMT
+EQIX
+PSA
+
+## CHINA (3 stocks)
+JD
+PDD
+BIDU
+
+## INTERNATIONAL (2 stocks)
+TSM
+SAP
+
+## GAMING (5 stocks)
+RBLX
+U
+EA
+TTWO
+NFLX
+
+## CYBERSECURITY (5 stocks)
+CRWD
+PANW
+ZS
+DDOG
+MDB

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(tee:*)",
+      "Bash(timeout 300 python scripts/compare_strategies_spy.py)",
+      "Bash(poetry run:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(timeout:*)",
+      "Bash(grep:*)",
+      "Bash(Remove-Item:*)",
+      "Bash(poetry add:*)",
+      "Bash(poetry lock:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,4 +1,5 @@
 """DuckDB database manager for local data storage."""
+
 from contextlib import contextmanager
 from datetime import datetime
 from typing import Generator
@@ -24,7 +25,8 @@ class DuckDBManager:
         try:
             with self.get_connection() as conn:
                 # Create stock_prices table
-                conn.execute("""
+                conn.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS stock_prices (
                         symbol VARCHAR NOT NULL,
                         timestamp TIMESTAMP NOT NULL,
@@ -36,13 +38,16 @@ class DuckDBManager:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         PRIMARY KEY (symbol, timestamp)
                     )
-                """)
+                """
+                )
 
                 # Create index for faster queries
-                conn.execute("""
+                conn.execute(
+                    """
                     CREATE INDEX IF NOT EXISTS idx_stock_prices_symbol_timestamp
                     ON stock_prices(symbol, timestamp DESC)
-                """)
+                """
+                )
 
                 logger.info(f"Database initialized at {self.db_path}")
         except Exception as e:
@@ -69,32 +74,31 @@ class DuckDBManager:
         try:
             with self.get_connection() as conn:
                 # Get count before insert
-                before_count = conn.execute(
-                    "SELECT COUNT(*) FROM stock_prices"
-                ).fetchone()[0]
+                before_count = conn.execute("SELECT COUNT(*) FROM stock_prices").fetchone()[0]
 
                 # Batch insert using executemany
-                conn.executemany("""
+                conn.executemany(
+                    """
                     INSERT INTO stock_prices (symbol, timestamp, open, high, low, close, volume)
                     VALUES (?, ?, ?, ?, ?, ?, ?)
                     ON CONFLICT (symbol, timestamp) DO NOTHING
-                """, [
-                    (
-                        p.symbol,
-                        p.timestamp,
-                        float(p.open),
-                        float(p.high),
-                        float(p.low),
-                        float(p.close),
-                        p.volume,
-                    )
-                    for p in prices
-                ])
+                """,
+                    [
+                        (
+                            p.symbol,
+                            p.timestamp,
+                            float(p.open),
+                            float(p.high),
+                            float(p.low),
+                            float(p.close),
+                            p.volume,
+                        )
+                        for p in prices
+                    ],
+                )
 
                 # Get count after insert
-                after_count = conn.execute(
-                    "SELECT COUNT(*) FROM stock_prices"
-                ).fetchone()[0]
+                after_count = conn.execute("SELECT COUNT(*) FROM stock_prices").fetchone()[0]
 
                 inserted_count = after_count - before_count
                 logger.info(f"Inserted {inserted_count} new stock prices out of {len(prices)}")
