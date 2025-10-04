@@ -1,0 +1,128 @@
+{
+  "date": "2025-10-03",
+  "time": "17:11:49",
+  "buy_candidates": [
+    {
+      "ticker": "GOOGL",
+      "price": 245.69,
+      "confidence": 0.75,
+      "adjusted_confidence": 0.6000000000000001,
+      "score": 0.0650522749273959,
+      "rr_ratio": 0.1084204582123265,
+      "entry_quality": "POOR",
+      "rs_strength": "ABOVE_AVERAGE",
+      "upside": 2.7351133542268693,
+      "downside": 25.226911962228822
+    },
+    {
+      "ticker": "TSLA",
+      "price": 436.0,
+      "confidence": 0.75,
+      "adjusted_confidence": 0.7000000000000001,
+      "score": 0.044241724403387125,
+      "rr_ratio": 0.06320246343341017,
+      "entry_quality": "POOR",
+      "rs_strength": "STRONG",
+      "upside": 1.8830275229357751,
+      "downside": 29.79357798165137
+    },
+    {
+      "ticker": "BE",
+      "price": 88.0,
+      "confidence": 0.75,
+      "adjusted_confidence": 0.75,
+      "score": -0.031050955414012676,
+      "rr_ratio": -0.04140127388535023,
+      "entry_quality": "POOR",
+      "rs_strength": "VERY_STRONG",
+      "upside": -2.9545454545454484,
+      "downside": 71.36363636363636
+    }
+  ],
+  "holdings": [
+    {
+      "ticker": "BABA",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 189.34,
+      "confidence": 0.5
+    },
+    {
+      "ticker": "BTC",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 53.6,
+      "confidence": 1.0
+    },
+    {
+      "ticker": "COP",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 93.38,
+      "confidence": 0.5
+    },
+    {
+      "ticker": "CSIQ",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 15.27,
+      "confidence": 0.5
+    },
+    {
+      "ticker": "ELV",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 340.24,
+      "confidence": 1.0
+    },
+    {
+      "ticker": "EPSM",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 15.08,
+      "confidence": 1.0
+    },
+    {
+      "ticker": "ETH",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 42.38,
+      "confidence": 1.0
+    },
+    {
+      "ticker": "INTC",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 37.3,
+      "confidence": 0.5
+    },
+    {
+      "ticker": "IREN",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 47.02,
+      "confidence": 0.5
+    },
+    {
+      "ticker": "NEON",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 3.7,
+      "confidence": 1.0
+    },
+    {
+      "ticker": "OPEN",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 8.01,
+      "confidence": 0.75
+    },
+    {
+      "ticker": "UNH",
+      "signal": "DONT_TRADE",
+      "signal_date": "2025-10-02",
+      "price": 353.72,
+      "confidence": 0.5
+    }
+  ]
+}

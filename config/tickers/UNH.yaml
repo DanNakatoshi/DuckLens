@@ -1,0 +1,37 @@
+# UNH - Healthcare Large Cap, Low Volatility
+# Characteristics: Steady growth, defensive, fundamentals-driven
+
+# Risk Management
+stop_loss_pct: 0.08          # 8% stop (tight - low volatility)
+take_profit_pct: 0.15        # 15% target (steady gains)
+trailing_stop_enabled: true
+trailing_stop_activation: 0.10
+trailing_stop_distance: 0.05
+
+# ML Configuration
+min_ml_confidence: 0.82      # High confidence (quality over quantity)
+use_momentum_filter: false   # UNH doesn't need momentum
+min_price_strength: 0.01
+min_volume_ratio: 1.0
+
+# Position Sizing
+max_position_size: 0.20      # 20% max (stable stock)
+min_position_size: 0.12
+
+# Market Conditions
+max_vix_for_entry: 25        # Only trade in calm markets
+preferred_regimes:
+  - BULLISH
+  - NEUTRAL                  # Defensive stock works in neutral
+
+# Technical Indicators
+indicators:
+  - RSI_14
+  - MACD_12_26_9
+  - ATR_14
+  - BB_PCT_20
+  - VOLUME_RATIO_20
+  - PRICE_VS_MA_50
+  - PRICE_VS_MA_200
+  - SECTOR_STRENGTH          # Healthcare sector
+  - RELATIVE_STRENGTH_SPY    # Relative to market

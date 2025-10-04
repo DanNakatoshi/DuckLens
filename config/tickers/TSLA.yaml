@@ -1,0 +1,37 @@
+# TSLA - Extreme Volatility, Sentiment Driven
+# Characteristics: Massive swings, Elon tweets, high beta
+
+# Risk Management
+stop_loss_pct: 0.25          # 25% stop (VERY wide - TSLA can swing)
+take_profit_pct: 0.50        # 50% target (can double quickly)
+trailing_stop_enabled: true
+trailing_stop_activation: 0.25
+trailing_stop_distance: 0.15  # Wide trailing
+
+# ML Configuration
+min_ml_confidence: 0.72      # Lower threshold (fewer opportunities)
+use_momentum_filter: true
+min_price_strength: 0.05     # 5% above MA (strong momentum)
+min_volume_ratio: 2.0        # 2x volume (big moves only)
+
+# Position Sizing
+max_position_size: 0.15      # Only 15% max (high risk)
+min_position_size: 0.08
+
+# Market Conditions
+max_vix_for_entry: 35        # Can trade in chaos (TSLA thrives)
+preferred_regimes:
+  - BULLISH
+  - NEUTRAL
+  - BEARISH                  # TSLA can rally even in bear markets
+
+# Technical Indicators
+indicators:
+  - RSI_14
+  - MACD_12_26_9
+  - ATR_14
+  - ATR_20                   # Longer ATR for volatility
+  - BB_PCT_20
+  - VOLUME_RATIO_20
+  - PRICE_VS_MA_20
+  - MOMENTUM_5               # Short-term momentum

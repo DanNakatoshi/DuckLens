@@ -1,0 +1,66 @@
+# Strategy: HIGH CONVICTION ONLY
+# Hypothesis: Fewer, bigger bets on highest confidence signals
+# Expected: Lower trade count, better win rate, less costs
+
+initial_capital: 30000
+target_capital: 1000000
+max_positions: 3           # ONLY 3 positions (was 5)
+commission: 0.001
+slippage: 0.0005
+
+start_date: "2020-01-01"
+end_date: "2024-12-31"
+
+# STRICT Signal Quality
+min_confidence: 0.85       # HIGH bar (was 0.75)
+min_adx: 30.0              # Strong trends only (was 25)
+confirmation_days: 2       # More confirmation (was 1)
+
+# Enable momentum filters
+use_momentum_filter: true
+min_price_strength: 0.03   # 3% above MA
+min_volume_ratio: 1.3      # Strong volume
+breakout_mode: false
+breakout_period: 126
+
+adapt_to_regime: true
+
+bullish_regime:
+  min_confidence: 0.85     # High conviction
+  stop_loss_pct: 0.18      # WIDE stops - let it breathe
+  take_profit_pct: 0.40    # BIG targets
+  max_leverage: 2.0        # Size up on conviction
+  min_leverage: 1.5
+  trade_frequency: "selective"
+
+neutral_regime:
+  min_confidence: 0.90     # Very high (was 0.75)
+  stop_loss_pct: 0.15
+  take_profit_pct: 0.25
+  max_leverage: 1.0
+  min_leverage: 0.7
+  trade_frequency: "selective"
+
+bearish_regime:
+  min_confidence: 0.95     # Near impossible
+  stop_loss_pct: 0.10
+  take_profit_pct: 0.15
+  max_leverage: 0.3
+  min_leverage: 0.3
+  trade_frequency: "defensive"
+
+swap_enabled: false        # No swapping - hold winners
+swap_confidence_gap: 0.25
+
+trailing_stop_enabled: true
+trailing_stop_activation: 0.20  # Let it run before trailing
+trailing_stop_distance: 0.10    # Wide trail
+
+avoid_earnings: true
+earnings_window_days: 5    # Extra buffer
+block_high_vix_trades: true
+max_vix_for_entry: 22
+
+print_monthly_summary: true
+save_equity_curve: true
+save_trade_log: true

@@ -1,0 +1,65 @@
+# Strategy: BENCHMARK - Buy & Hold SPY
+# Hypothesis: Just hold the index, beat active trading
+# Expected: ~80% return 2020-2024 with ZERO effort
+
+initial_capital: 30000
+target_capital: 1000000
+max_positions: 1           # Only SPY
+commission: 0.001
+slippage: 0.0005
+
+start_date: "2020-01-01"
+end_date: "2024-12-31"
+
+# Doesn't matter - won't trade individual stocks
+min_confidence: 0.50
+min_adx: 20.0
+confirmation_days: 1
+
+use_momentum_filter: false
+min_price_strength: 0.0
+min_volume_ratio: 1.0
+breakout_mode: false
+breakout_period: 126
+
+adapt_to_regime: false  # Don't care about regime
+
+bullish_regime:
+  min_confidence: 0.50
+  stop_loss_pct: 0.25    # Wide - buy and hold
+  take_profit_pct: 10.0  # Never hit
+  max_leverage: 1.0
+  min_leverage: 1.0
+  trade_frequency: "passive"
+
+neutral_regime:
+  min_confidence: 0.50
+  stop_loss_pct: 0.25
+  take_profit_pct: 10.0
+  max_leverage: 1.0
+  min_leverage: 1.0
+  trade_frequency: "passive"
+
+bearish_regime:
+  min_confidence: 0.50
+  stop_loss_pct: 0.25
+  take_profit_pct: 10.0
+  max_leverage: 1.0
+  min_leverage: 1.0
+  trade_frequency: "passive"
+
+swap_enabled: false
+swap_confidence_gap: 0.50
+
+trailing_stop_enabled: false
+trailing_stop_activation: 1.0
+trailing_stop_distance: 0.5
+
+avoid_earnings: false
+earnings_window_days: 0
+block_high_vix_trades: false
+max_vix_for_entry: 100
+
+print_monthly_summary: true
+save_equity_curve: true
+save_trade_log: true

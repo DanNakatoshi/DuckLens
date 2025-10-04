@@ -173,6 +173,74 @@ class MarketDataDB:
         """
         )
 
+        # Earnings calendar table (company earnings dates)
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS earnings (
+                symbol VARCHAR NOT NULL,
+                earnings_date DATE NOT NULL,
+                fiscal_ending DATE,
+                estimate DECIMAL(10, 2),
+                reported DECIMAL(10, 2),
+                surprise DECIMAL(10, 2),
+                source VARCHAR DEFAULT 'alpha_vantage',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (symbol, earnings_date)
+            )
+        """
+        )
+
+        # Trade journal table (manual trade tracking)
+        self.conn.execute(
+            """
+            CREATE SEQUENCE IF NOT EXISTS trade_journal_seq START 1
+        """
+        )
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS trade_journal (
+                id INTEGER PRIMARY KEY DEFAULT nextval('trade_journal_seq'),
+                trade_date DATE NOT NULL,
+                symbol VARCHAR NOT NULL,
+                action VARCHAR NOT NULL,
+                quantity INTEGER NOT NULL,
+                price DECIMAL(18, 4) NOT NULL,
+                total_value DECIMAL(18, 2) NOT NULL,
+                strategy VARCHAR DEFAULT 'trend_2x',
+                reason VARCHAR,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """
+        )
+
+        # Account balance tracking (cash + margin)
+        self.conn.execute(
+            """
+            CREATE SEQUENCE IF NOT EXISTS account_balance_seq START 1
+        """
+        )
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS account_balance (
+                id INTEGER PRIMARY KEY DEFAULT nextval('account_balance_seq'),
+                balance_date DATE NOT NULL,
+                cash_balance DECIMAL(18, 2) NOT NULL,
+                portfolio_value DECIMAL(18, 2) DEFAULT 0,
+                total_value DECIMAL(18, 2) NOT NULL,
+                margin_used DECIMAL(18, 2) DEFAULT 0,
+                margin_available DECIMAL(18, 2) DEFAULT 0,
+                buying_power DECIMAL(18, 2) DEFAULT 0,
+                spy_price DECIMAL(18, 4),
+                spy_return_pct DECIMAL(10, 4),
+                account_return_pct DECIMAL(10, 4),
+                notes VARCHAR,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(balance_date)
+            )
+        """
+        )
+
         # Options flow daily aggregates table (for CatBoost features)
         self.conn.execute(
             """
@@ -260,6 +328,98 @@ class MarketDataDB:
         """
         )
 
+        # Trading signals table (track all buy/sell signals and outcomes)
+        self.conn.execute(
+            """
+            CREATE SEQUENCE IF NOT EXISTS trading_signals_seq START 1
+        """
+        )
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS trading_signals (
+                id INTEGER PRIMARY KEY DEFAULT nextval('trading_signals_seq'),
+                signal_date DATE NOT NULL,
+                signal_time TIMESTAMP NOT NULL,
+                symbol VARCHAR(10) NOT NULL,
+                signal_type VARCHAR(10) NOT NULL,
+                signal_source VARCHAR(50) NOT NULL,
+
+                signal_strength DECIMAL(5, 2),
+                confidence_level VARCHAR(20),
+
+                price_at_signal DECIMAL(18, 4),
+                target_entry DECIMAL(18, 4),
+                target_exit DECIMAL(18, 4),
+                stop_loss DECIMAL(18, 4),
+
+                rsi_value DECIMAL(10, 2),
+                macd_value DECIMAL(10, 4),
+                volume_ratio DECIMAL(10, 2),
+                trend_direction VARCHAR(10),
+
+                current_position_size DECIMAL(18, 2),
+                suggested_action VARCHAR(50),
+                suggested_quantity INTEGER,
+                suggested_allocation_pct DECIMAL(5, 2),
+
+                use_margin BOOLEAN DEFAULT FALSE,
+                margin_requirement DECIMAL(18, 2),
+                risk_level VARCHAR(20),
+
+                action_taken BOOLEAN DEFAULT FALSE,
+                actual_entry_date DATE,
+                actual_entry_price DECIMAL(18, 4),
+                actual_quantity INTEGER,
+
+                max_profit_potential DECIMAL(18, 2),
+                actual_profit DECIMAL(18, 2),
+                days_held INTEGER,
+                outcome VARCHAR(20),
+
+                notes TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """
+        )
+
+        # Portfolio rebalancing recommendations table
+        self.conn.execute(
+            """
+            CREATE SEQUENCE IF NOT EXISTS rebalancing_recommendations_seq START 1
+        """
+        )
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS rebalancing_recommendations (
+                id INTEGER PRIMARY KEY DEFAULT nextval('rebalancing_recommendations_seq'),
+                recommendation_date TIMESTAMP NOT NULL,
+
+                total_portfolio_value DECIMAL(18, 2),
+                cash_available DECIMAL(18, 2),
+                margin_available DECIMAL(18, 2),
+
+                action_type VARCHAR(20),
+                symbol_to_reduce VARCHAR(10),
+                symbol_to_increase VARCHAR(10),
+
+                reduce_quantity INTEGER,
+                increase_quantity INTEGER,
+                reduce_reason TEXT,
+                increase_reason TEXT,
+
+                expected_improvement_pct DECIMAL(10, 2),
+                risk_score DECIMAL(5, 2),
+
+                executed BOOLEAN DEFAULT FALSE,
+                execution_date TIMESTAMP,
+                actual_improvement_pct DECIMAL(10, 2),
+
+                notes TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """
+        )
+
         # Create indexes for better query performance
         self.conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_stock_prices_symbol ON stock_prices(symbol)"
@@ -308,6 +468,18 @@ class MarketDataDB:
         )
         self.conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_options_contracts_expiry ON options_contracts_snapshot(expiration_date)"
+        )
+        self.conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_trading_signals_symbol ON trading_signals(symbol)"
+        )
+        self.conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_trading_signals_date ON trading_signals(signal_date)"
+        )
+        self.conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_trading_signals_source ON trading_signals(signal_source)"
+        )
+        self.conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_rebalancing_date ON rebalancing_recommendations(recommendation_date)"
         )
 
         # Sync ticker metadata on init
@@ -551,6 +723,92 @@ class MarketDataDB:
         )
 
         return len(data)
+
+    def insert_earnings(self, earnings_list: list[dict]) -> int:
+        """
+        Insert or update earnings dates.
+
+        Args:
+            earnings_list: List of earnings dicts from Alpha Vantage:
+                [
+                    {
+                        "symbol": "AAPL",
+                        "earnings_date": "2024-01-25",
+                        "fiscal_ending": "2023-12-31",
+                        "estimate": "2.10"
+                    },
+                    ...
+                ]
+
+        Returns:
+            Number of rows inserted/updated
+        """
+        if not earnings_list:
+            return 0
+
+        data = []
+        for earn in earnings_list:
+            # Skip if missing required fields
+            if not earn.get("symbol") or not earn.get("earnings_date"):
+                continue
+
+            # Handle both "earnings_date" and "report_date" keys
+            earnings_date = earn.get("earnings_date") or earn.get("report_date")
+
+            data.append((
+                earn["symbol"],
+                earnings_date,
+                earn.get("fiscal_ending"),
+                float(earn.get("estimate")) if earn.get("estimate") and earn.get("estimate") != "" else None,
+            ))
+
+        if not data:
+            return 0
+
+        self.conn.executemany(
+            """
+            INSERT OR REPLACE INTO earnings
+            (symbol, earnings_date, fiscal_ending, estimate)
+            VALUES (?, ?, ?, ?)
+        """,
+            data,
+        )
+
+        return len(data)
+
+    def get_next_earnings(self, symbol: str) -> tuple[str, int] | None:
+        """
+        Get next earnings date for a symbol.
+
+        Args:
+            symbol: Ticker symbol
+
+        Returns:
+            (earnings_date_str, days_until) or None
+        """
+        from datetime import date
+
+        today = date.today()
+
+        result = self.conn.execute(
+            """
+            SELECT earnings_date
+            FROM earnings
+            WHERE symbol = ?
+            AND earnings_date >= ?
+            ORDER BY earnings_date
+            LIMIT 1
+        """,
+            [symbol, today],
+        ).fetchone()
+
+        if not result:
+            return None
+
+        earnings_date = result[0]
+        days_until = (earnings_date - today).days
+
+        return (earnings_date.strftime("%Y-%m-%d"), days_until)
 
     def insert_calendar_events(self, events: list) -> int:
         """

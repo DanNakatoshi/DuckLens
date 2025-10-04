@@ -554,6 +554,31 @@ def main():
     # Update economic indicators (check last 30 days for monthly releases)
     update_economic_indicators(days_back=30)
 
+    # Calculate technical indicators (SMA, RSI, MACD, etc.)
+    print(f"\n{'='*60}")
+    print("Calculating Technical Indicators")
+    print(f"{'='*60}\n")
+
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["python", "scripts/calculate_indicators.py", "--store"],
+            capture_output=True,
+            text=True,
+            cwd=Path(__file__).parent.parent
+        )
+
+        if result.returncode == 0:
+            print("OK Indicators calculated successfully")
+        else:
+            print(f"! Warning: Indicator calculation had issues")
+            if result.stderr:
+                print(f"  {result.stderr[:200]}")
+    except Exception as e:
+        print(f"! Could not calculate indicators: {e}")
+
+    print(f"{'='*60}\n")
+
     # Show watchlist signals
     show_watchlist_signals()
 
@@ -565,6 +590,48 @@ def main():
 
     # Print summary
     print_update_summary()
+
+    # Show upcoming calendar events
+    print("\n" + "=" * 60)
+    print("UPCOMING MARKET EVENTS (Next 14 Days)")
+    print("=" * 60 + "\n")
+
+    try:
+        from src.models.financial_calendar import FinancialCalendar, EventImpact
+
+        upcoming = FinancialCalendar.get_upcoming_events(days_ahead=14)
+
+        if upcoming:
+            print(f"{'Date':<18} {'Days':<8} {'Event':<25} {'Impact':<12}")
+            print("-" * 65)
+
+            for event in upcoming:
+                impact_icon = {
+                    EventImpact.EXTREME: "🔴",
+                    EventImpact.HIGH: "🟠",
+                    EventImpact.MEDIUM: "🟡",
+                    EventImpact.LOW: "🟢"
+                }.get(event["impact"], "⚪")
+
+                print(
+                    f"{event['date'].strftime('%Y-%m-%d (%a)'):<18} "
+                    f"{event['days_until']:>2} days   "
+                    f"{event['name']:<25} "
+                    f"{impact_icon} {event['impact'].value:<12}"
+                )
+
+            # Check if any events tomorrow
+            tomorrow_events = [e for e in upcoming if e["days_until"] == 1]
+            if tomorrow_events:
+                print("\n⚠️  WARNING: High-impact event TOMORROW!")
+                for e in tomorrow_events:
+                    print(f"   {e['name']} - Avoid new positions")
+        else:
+            print("✓ No major market events in next 14 days")
+
+        print()
+    except Exception as e:
+        print(f"! Could not load calendar: {e}\n")
 
     print("=" * 60)
     print("OK Daily update complete!")

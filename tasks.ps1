@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position=0)]
-    [ValidateSet("test", "lint", "format", "type-check", "all", "install", "fetch-polygon", "check-duckdb", "test-polygon", "fetch-historical", "fetch-10-years", "update-daily", "db-stats", "calc-indicators", "show-indicators", "test-indicators", "fetch-economic", "list-economic", "test-fred", "build-calendar", "fetch-options-flow", "calc-options-metrics", "show-options-flow", "test-options-flow", "test-aggregates", "test-contract", "test-indicators-only", "train-backtest", "train-verbose", "optimize", "backtest-trend-spy", "daily-signals", "watchlist", "backtest-all", "backtest-10-years", "portfolio", "import-portfolio", "analyze-trades", "morning", "intraday", "calc-1m", "check-data", "401k", "chart")]
+    [ValidateSet("test", "lint", "format", "type-check", "all", "install", "fetch-polygon", "check-duckdb", "test-polygon", "fetch-historical", "fetch-10-years", "update-daily", "db-stats", "calc-indicators", "show-indicators", "test-indicators", "fetch-economic", "list-economic", "test-fred", "build-calendar", "fetch-options-flow", "calc-options-metrics", "show-options-flow", "test-options-flow", "test-aggregates", "test-contract", "test-indicators-only", "train-backtest", "train-verbose", "optimize", "backtest-trend-spy", "daily-signals", "watchlist", "backtest-all", "backtest-10-years", "portfolio", "import-portfolio", "analyze-trades", "morning", "intraday", "intraday-plus", "market-check", "calc-1m", "check-data", "401k", "chart", "fetch-earnings", "add-trade", "update-cash", "account-health", "track-performance")]
     [string]$Command = "all",
 
     [Parameter(Position=1, ValueFromRemainingArguments=$true)]
@@ -243,9 +243,9 @@ function Run-ImportPortfolio {
 function Run-AnalyzeTrades {
     Write-Host "`n=== TRADE JOURNAL ANALYSIS ===" -ForegroundColor Cyan
     Write-Host "Analyze past trades to see what worked and what didn't" -ForegroundColor Yellow
-    Write-Host "Learn from wins, losses, earnings trades, and volume spikes" -ForegroundColor Yellow
+    Write-Host "Learn from wins, losses, and track progress to 1M" -ForegroundColor Yellow
     Write-Host ""
-    poetry run python scripts/analyze_trades.py
+    poetry run python scripts/analyze_manual_trades.py
 }
 
 function Run-Morning {
@@ -263,6 +263,39 @@ function Run-Intraday {
     Write-Host "Data: 15-minute delayed (Polygon.io free tier)" -ForegroundColor Yellow
     Write-Host ""
     poetry run python scripts/intraday_monitor.py
+}
+
+function Run-IntradayPlus {
+    Write-Host "`n=== INTRADAY MONITOR ENHANCED - 3 PM Trading Decision ===" -ForegroundColor Cyan
+    Write-Host "Enhanced version with Rich formatting and color" -ForegroundColor Green
+    Write-Host "Shows: Morning BUY signals update, holdings check, new opportunities" -ForegroundColor Green
+    Write-Host "Data: 15-minute delayed with full Phase 1 analysis" -ForegroundColor Yellow
+    Write-Host ""
+    poetry run python scripts/intraday_monitor_enhanced.py
+}
+
+function Run-MarketCheck {
+    Write-Host "`n=== UNIFIED MARKET CHECK - Smart All-Day Monitor ===" -ForegroundColor Cyan
+    Write-Host "REPLACES: morning + intraday scripts - now unified!" -ForegroundColor Green
+    Write-Host ""
+    Write-Host "Features:" -ForegroundColor Yellow
+    Write-Host "  - Auto-detects market status (pre-market, open, after-hours)" -ForegroundColor White
+    Write-Host "  - Live prices during market hours (15-min delayed)" -ForegroundColor White
+    Write-Host "  - Static data when market is closed" -ForegroundColor White
+    Write-Host "  - Auto-refresh option with --live flag" -ForegroundColor White
+    Write-Host ""
+    Write-Host "Usage:" -ForegroundColor Yellow
+    Write-Host "  Static mode:  .\tasks.ps1 market-check" -ForegroundColor Cyan
+    Write-Host "  Live mode:    .\tasks.ps1 market-check --live" -ForegroundColor Cyan
+    Write-Host "  Custom rate:  .\tasks.ps1 market-check --live --interval 300 (5 min)" -ForegroundColor Cyan
+    Write-Host ""
+
+    # Pass through any arguments (--live, --interval, etc.)
+    if ($RemainingArgs) {
+        poetry run python scripts/market_check.py $RemainingArgs
+    } else {
+        poetry run python scripts/market_check.py
+    }
 }
 
 function Run-Calc1M {
@@ -298,6 +331,43 @@ function Run-Chart {
     $days = if ($RemainingArgs -and $RemainingArgs[1]) { $RemainingArgs[1] } else { 90 }
 
     poetry run python scripts/show_chart.py $ticker $days
+}
+
+function Run-FetchEarnings {
+    Write-Host "`n=== FETCH EARNINGS CALENDAR (AUTO-RETRY) ===" -ForegroundColor Cyan
+    Write-Host "Fetch earnings dates with automatic retry until complete" -ForegroundColor Yellow
+    Write-Host "Auto-detects best API: Finnhub (60/min) or Alpha Vantage (25/day)" -ForegroundColor Yellow
+    Write-Host "Will retry up to 3 times if data is incomplete" -ForegroundColor Green
+    Write-Host ""
+    poetry run python scripts/fetch_earnings_retry.py
+}
+
+function Run-AddTrade {
+    Write-Host "`n=== ADD TRADE TO JOURNAL ===" -ForegroundColor Cyan
+    Write-Host "Record executed trades for performance tracking" -ForegroundColor Yellow
+    Write-Host ""
+    poetry run python scripts/add_trade.py
+}
+
+function Run-UpdateCash {
+    Write-Host "`n=== RECORD CASH TRANSACTION ===" -ForegroundColor Cyan
+    Write-Host "Deposit or withdraw cash (portfolio calculated automatically)" -ForegroundColor Yellow
+    Write-Host ""
+    poetry run python scripts/record_cash_transaction.py
+}
+
+function Run-AccountHealth {
+    Write-Host "`n=== ACCOUNT HEALTH DASHBOARD ===" -ForegroundColor Cyan
+    Write-Host "View account status, margin risk, and progress to $1M" -ForegroundColor Yellow
+    Write-Host ""
+    poetry run python scripts/account_health.py
+}
+
+function Run-TrackPerformance {
+    Write-Host "`n=== PERFORMANCE TRACKING ===" -ForegroundColor Cyan
+    Write-Host "Track your journey to $1M vs market (SPY)" -ForegroundColor Yellow
+    Write-Host ""
+    poetry run python scripts/track_performance.py
 }
 
 function Run-All {
@@ -347,10 +417,17 @@ switch ($Command) {
     "analyze-trades" { Run-AnalyzeTrades }
     "morning" { Run-Morning }
     "intraday" { Run-Intraday }
+    "intraday-plus" { Run-IntradayPlus }
+    "market-check" { Run-MarketCheck }
     "calc-1m" { Run-Calc1M }
     "check-data" { Run-CheckData }
     "401k" { Run-401k }
     "chart" { Run-Chart }
+    "fetch-earnings" { Run-FetchEarnings }
+    "add-trade" { Run-AddTrade }
+    "update-cash" { Run-UpdateCash }
+    "account-health" { Run-AccountHealth }
+    "track-performance" { Run-TrackPerformance }
     "all" { Run-All }
 }
 

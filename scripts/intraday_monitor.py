@@ -17,6 +17,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from dotenv import load_dotenv
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+from rich.text import Text
 
 from src.config.tickers import TIER_2_STOCKS
 from src.data.collectors.polygon_collector import PolygonCollector
@@ -26,6 +30,7 @@ from src.models.trend_detector import TradingSignal
 from src.portfolio.portfolio_manager import PortfolioManager
 
 load_dotenv()
+console = Console()
 
 
 def get_market_direction_intraday(collector: PolygonCollector, db: MarketDataDB, detector: EnhancedTrendDetector) -> dict:
@@ -49,30 +54,46 @@ def get_market_direction_intraday(collector: PolygonCollector, db: MarketDataDB,
 def get_intraday_snapshot(ticker: str, collector: PolygonCollector) -> dict:
     """Get current intraday price snapshot (15-min delayed)."""
     try:
-        # Get previous close first
-        prev_close_response = collector.client.get_previous_close_agg(ticker)
+        # Direct API call to v2/snapshot endpoint
+        # This endpoint provides current day data + previous day for comparison
+        url = f"/v2/snapshot/locale/us/markets/stocks/tickers/{ticker}"
+        response = collector.client.get(url)
+        response.raise_for_status()
 
-        if not prev_close_response or len(prev_close_response) == 0:
+        data = response.json()
+
+        # Check response status
+        if data.get("status") != "OK" or not data.get("ticker"):
             return None
 
-        prev_close = float(prev_close_response[0].close)
+        ticker_data = data["ticker"]
 
-        # Get current snapshot (15-min delayed on free tier)
-        snapshot = collector.client.get_snapshot_ticker("stocks", ticker)
-
-        if not snapshot or not snapshot.day:
+        # Current day data
+        if not ticker_data.get("day"):
             return None
 
-        current_price = float(snapshot.day.close)
-        open_price = float(snapshot.day.open)
-        high = float(snapshot.day.high)
-        low = float(snapshot.day.low)
-        volume = int(snapshot.day.volume)
+        day_data = ticker_data["day"]
+        current_price = float(day_data["c"])  # close (most recent price)
+        open_price = float(day_data["o"])  # open
+        high = float(day_data["h"])  # high
+        low = float(day_data["l"])  # low
+        volume = int(day_data["v"])  # volume
 
-        # Calculate intraday metrics
-        change_from_close = ((current_price / prev_close) - 1) * 100
-        change_from_open = ((current_price / open_price) - 1) * 100
-        daily_range = ((high - low) / low) * 100
+        # Previous day data
+        if not ticker_data.get("prevDay"):
+            return None
+
+        prev_day_data = ticker_data["prevDay"]
+        prev_close = float(prev_day_data["c"])
+
+        # Today's change percentage (calculated by API)
+        if "todaysChangePerc" in ticker_data:
+            change_from_close = float(ticker_data["todaysChangePerc"])
+        else:
+            change_from_close = ((current_price / prev_close) - 1) * 100
+
+        change_from_open = ((current_price / open_price) - 1) * 100 if open_price > 0 else 0
+        daily_range = ((high - low) / low) * 100 if low > 0 else 0
 
         return {
             "ticker": ticker,
@@ -93,7 +114,28 @@ def get_intraday_snapshot(ticker: str, collector: PolygonCollector) -> dict:
         return None
 
 
-def analyze_intraday_action(ticker: str, intraday_data: dict, db: MarketDataDB, detector: EnhancedTrendDetector, portfolio_manager: PortfolioManager) -> dict:
+def get_morning_buy_signals(db: MarketDataDB, detector: EnhancedTrendDetector) -> list[str]:
+    """Get tickers that had BUY signals this morning from database."""
+    # Check for BUY signals from today's date
+    today = datetime.now().date()
+
+    query = """
+        SELECT DISTINCT ticker
+        FROM trade_log
+        WHERE DATE(entry_date) = ?
+        AND action = 'BUY'
+        ORDER BY ticker
+    """
+
+    try:
+        results = db.conn.execute(query, [today]).fetchall()
+        return [row[0] for row in results]
+    except Exception:
+        # If no trade log or error, return empty
+        return []
+
+
+def analyze_intraday_action(ticker: str, intraday_data: dict, db: MarketDataDB, detector: EnhancedTrendDetector, portfolio_manager: PortfolioManager, had_morning_signal: bool = False) -> dict:
     """Analyze what action to take at 3 PM."""
 
     # Get current signal from strategy
@@ -133,6 +175,10 @@ def analyze_intraday_action(ticker: str, intraday_data: dict, db: MarketDataDB, 
             else:
                 recommendation = "BUY"
                 reason = f"BUY signal: {signal.reasoning[:60]}"
+        elif had_morning_signal:
+            # Had morning BUY but now DONT_TRADE - show status change
+            recommendation = "SIGNAL_LOST"
+            reason = f"Morning BUY signal lost - now {signal.signal.value}"
         elif intraday_data["change_from_close"] < -5:
             recommendation = "WATCH"
             reason = f"Down {abs(intraday_data['change_from_close']):.1f}% - check for reversal"
@@ -152,6 +198,7 @@ def analyze_intraday_action(ticker: str, intraday_data: dict, db: MarketDataDB, 
         "confidence": signal.confidence,
         "owns_it": position is not None,
         "intraday": intraday_data,
+        "had_morning_signal": had_morning_signal,
     }
 
 
@@ -304,8 +351,8 @@ def main():
     buy_opportunities = []
 
     with PolygonCollector() as collector:
-        # Check top watchlist stocks (limit to 20 for speed)
-        watchlist_tickers = [t.symbol for t in TIER_2_STOCKS[:20]]
+        # Check ALL watchlist stocks (removed limit to catch all BUY signals)
+        watchlist_tickers = [t.symbol for t in TIER_2_STOCKS]
 
         for ticker in sorted(watchlist_tickers):
             # Skip if we already own it

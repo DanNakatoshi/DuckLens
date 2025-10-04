@@ -10,7 +10,13 @@
       "Bash(grep:*)",
       "Bash(Remove-Item:*)",
       "Bash(poetry add:*)",
-      "Bash(poetry lock:*)"
+      "Bash(poetry lock:*)",
+      "Bash(Get-Process -Id 20868 -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object Id,ProcessName)",
+      "Bash(powershell:*)",
+      "Bash(git checkout:*)",
+      "Bash(taskkill:*)",
+      "Bash(pip install:*)"
     ],
     "deny": [],
     "ask": []

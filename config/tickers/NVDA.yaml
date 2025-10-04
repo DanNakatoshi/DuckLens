@@ -1,0 +1,36 @@
+# NVDA - High Volatility Tech Stock
+# Characteristics: Momentum-driven, earnings sensitive, wide price swings
+
+# Risk Management
+stop_loss_pct: 0.18          # 18% stop (wider due to high volatility)
+take_profit_pct: 0.40        # 40% target (can make big moves)
+trailing_stop_enabled: true
+trailing_stop_activation: 0.20  # Start trailing at 20% gain
+trailing_stop_distance: 0.10    # 10% trailing distance
+
+# ML Configuration
+min_ml_confidence: 0.75      # 75% confidence threshold
+use_momentum_filter: true    # NVDA loves momentum
+min_price_strength: 0.03     # 3% above 20-day MA
+min_volume_ratio: 1.5        # 1.5x volume (strong moves)
+
+# Position Sizing
+max_position_size: 0.25      # Up to 25% of portfolio (high conviction)
+min_position_size: 0.10      # Minimum 10%
+
+# Market Conditions
+max_vix_for_entry: 30        # Can trade in moderate volatility
+preferred_regimes:
+  - BULLISH
+  - NEUTRAL                  # NVDA can rally in neutral markets too
+
+# Technical Indicators (for ML features)
+indicators:
+  - RSI_14
+  - MACD_12_26_9
+  - ATR_14
+  - BB_PCT_20                # Bollinger Band percentage
+  - VOLUME_RATIO_20
+  - PRICE_VS_MA_20
+  - PRICE_VS_MA_50
+  - SECTOR_STRENGTH          # Tech sector performance

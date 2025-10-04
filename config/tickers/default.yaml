@@ -1,0 +1,34 @@
+# DEFAULT - Fallback for tickers without specific configs
+# Conservative settings for unknown stocks
+
+# Risk Management
+stop_loss_pct: 0.10          # 10% stop (conservative)
+take_profit_pct: 0.20        # 20% target (reasonable)
+trailing_stop_enabled: true
+trailing_stop_activation: 0.12
+trailing_stop_distance: 0.06
+
+# ML Configuration
+min_ml_confidence: 0.80      # High confidence required
+use_momentum_filter: true
+min_price_strength: 0.02
+min_volume_ratio: 1.3
+
+# Position Sizing
+max_position_size: 0.15      # 15% max (conservative)
+min_position_size: 0.08
+
+# Market Conditions
+max_vix_for_entry: 25        # Only trade calm markets
+preferred_regimes:
+  - BULLISH
+
+# Technical Indicators
+indicators:
+  - RSI_14
+  - MACD_12_26_9
+  - ATR_14
+  - BB_PCT_20
+  - VOLUME_RATIO_20
+  - PRICE_VS_MA_20
+  - PRICE_VS_MA_50

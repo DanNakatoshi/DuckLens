@@ -1,5 +1,5 @@
 {
-  "cash": 772.45,
+  "cash": 1126.7900000000002,
   "positions": {
     "UNH": {
       "symbol": "UNH",
@@ -19,13 +19,6 @@
       "symbol": "COP",
       "quantity": 20,
       "price_paid": 123.6585,
-      "purchase_date": "2025-10-01",
-      "notes": "Imported from E*TRADE"
-    },
-    "UPS": {
-      "symbol": "UPS",
-      "quantity": 20,
-      "price_paid": 153.4,
       "purchase_date": "2025-10-01",
       "notes": "Imported from E*TRADE"
     },
@@ -84,7 +77,14 @@
       "price_paid": 4.32691,
       "purchase_date": "2025-10-01",
       "notes": "Imported from E*TRADE"
+    },
+    "ELV": {
+      "symbol": "ELV",
+      "quantity": 4,
+      "price_paid": 340.365,
+      "purchase_date": "2025-10-02",
+      "notes": ""
     }
   },
-  "last_updated": "2025-10-01 17:02:23"
+  "last_updated": "2025-10-02 16:58:23"
 }

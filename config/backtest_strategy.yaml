@@ -1,0 +1,75 @@
+# Backtest Strategy Configuration
+# Customize these parameters based on market conditions
+
+# Overall Settings
+initial_capital: 30000
+target_capital: 1000000
+max_positions: 5              # Fewer positions = less diversification drag
+commission: 0.001  # 0.1%
+slippage: 0.0005   # 0.05%
+
+# Date Range
+start_date: "2020-01-01"
+end_date: "2024-12-31"
+
+# Signal Quality Filters
+min_confidence: 0.75        # Minimum confidence to consider signal
+min_adx: 25.0              # Minimum ADX for trend strength
+confirmation_days: 1        # Days to confirm trend change
+
+# Momentum Filters (Set to FALSE to test baseline)
+use_momentum_filter: false  # Disabled to see baseline performance
+min_price_strength: 0.02    # 2% above 20-day MA (when enabled)
+min_volume_ratio: 1.2       # 1.2x volume (when enabled)
+breakout_mode: false        # Disabled
+breakout_period: 126        # 6-month breakout
+
+# Market Regime Adaptation (Different params for different markets)
+adapt_to_regime: true
+
+# BULLISH Market Parameters (VIX < 20, SPY trending up)
+bullish_regime:
+  min_confidence: 0.75
+  stop_loss_pct: 0.12      # 12% stop (wider to avoid whipsaws)
+  take_profit_pct: 0.25    # 25% target (let winners run)
+  max_leverage: 1.5        # Moderate leverage (was 2.0, too risky)
+  min_leverage: 1.0
+  trade_frequency: "aggressive"  # Take more setups
+
+# NEUTRAL Market Parameters (VIX 20-30, SPY choppy)
+neutral_regime:
+  min_confidence: 0.75     # Standard quality (0.80 was too strict)
+  stop_loss_pct: 0.10      # 10% stop
+  take_profit_pct: 0.15    # 15% target
+  max_leverage: 0.7        # Some exposure (was 0.5, too defensive)
+  min_leverage: 0.5
+  trade_frequency: "selective"  # Be picky
+
+# BEARISH Market Parameters (VIX > 30, SPY trending down)
+bearish_regime:
+  min_confidence: 0.90     # Only BEST setups (was 0.85)
+  stop_loss_pct: 0.08      # 8% stop (was 6%, too tight)
+  take_profit_pct: 0.12    # 12% target (quick exits)
+  max_leverage: 0.2        # Minimal exposure (was 0.3)
+  min_leverage: 0.2
+  trade_frequency: "defensive"  # Cash is king - mostly sit out
+
+# Position Swapping
+swap_enabled: true
+swap_confidence_gap: 0.15  # Need 15% better confidence to swap
+
+# Exit Rules
+trailing_stop_enabled: true
+trailing_stop_activation: 0.10  # Activate after 10% profit
+trailing_stop_distance: 0.05    # Trail by 5%
+
+# Special Filters
+avoid_earnings: true
+earnings_window_days: 3
+block_high_vix_trades: true  # Don't open new positions when VIX spikes
+max_vix_for_entry: 25         # Only trade when VIX < 25 (was 35, too permissive)
+
+# Performance Tracking
+print_monthly_summary: true
+save_equity_curve: true
+save_trade_log: true

@@ -1,0 +1,66 @@
+# ML-Enhanced Backtest Strategy
+# Uses CatBoost models + per-ticker configs for superior performance
+
+# Backtest Period
+start_date: "2020-01-01"
+end_date: "2024-12-31"
+
+# Capital Management
+initial_capital: 30000
+target_capital: 1000000
+max_positions: 5              # Fewer positions, higher conviction
+
+# ML Configuration
+use_ml_models: true           # Enable CatBoost predictions
+ml_models_dir: "models/catboost"
+min_ml_confidence: 0.75       # Global minimum (can be overridden per ticker)
+ml_target_return: 0.10        # Models trained for 10% gain
+ml_target_days: 10            # Within 10 days
+
+# Per-Ticker Configs
+use_ticker_configs: true      # Load from config/tickers/
+ticker_configs_dir: "config/tickers"
+default_ticker_config: "config/tickers/default.yaml"
+
+# Overall Risk Management (can be overridden per ticker)
+stop_loss_pct: 0.12           # 12% default stop
+take_profit_pct: 0.25         # 25% default target
+trailing_stop_enabled: true
+trailing_stop_activation: 0.15
+trailing_stop_distance: 0.08
+
+# Position Sizing
+position_sizing_method: "ml_confidence"  # Size by ML confidence
+max_position_size: 0.25       # Maximum 25% per position
+min_position_size: 0.10       # Minimum 10% per position
+
+# Market Conditions
+max_vix_for_entry: 30         # Don't trade when VIX > 30
+use_regime_adaptation: true
+
+# Regime-Based Parameters
+bullish_regime:
+  min_confidence: 0.75
+  stop_loss_pct: 0.15
+  take_profit_pct: 0.30
+  max_leverage: 1.0
+
+neutral_regime:
+  min_confidence: 0.80        # Higher bar in neutral
+  stop_loss_pct: 0.12
+  take_profit_pct: 0.20
+  max_leverage: 0.7
+
+bearish_regime:
+  min_confidence: 0.90        # Very high bar in bearish
+  stop_loss_pct: 0.10
+  take_profit_pct: 0.15
+  max_leverage: 0.3
+
+# Feature Engineering (passed to ML models)
+lookback_days: 200            # Days of history for features
+
+# Reporting
+report_frequency: "monthly"   # Monthly progress updates
+save_trades: true             # Save individual trades to CSV
+trades_output: "results/ml_trades.csv"

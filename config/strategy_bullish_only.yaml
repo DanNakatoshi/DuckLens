@@ -1,0 +1,67 @@
+# Strategy: BULLISH REGIME ONLY
+# Hypothesis: Only trade when market is trending up, sit in cash otherwise
+# Expected: Avoid choppy losses, catch bull runs
+
+initial_capital: 30000
+target_capital: 1000000
+max_positions: 5
+commission: 0.001
+slippage: 0.0005
+
+start_date: "2020-01-01"
+end_date: "2024-12-31"
+
+# Signal Quality
+min_confidence: 0.75
+min_adx: 25.0
+confirmation_days: 1
+
+# NO momentum filters - rely on trend detector
+use_momentum_filter: false
+min_price_strength: 0.02
+min_volume_ratio: 1.2
+breakout_mode: false
+breakout_period: 126
+
+# CRITICAL: Only trade BULLISH, skip NEUTRAL/BEARISH
+adapt_to_regime: true
+
+bullish_regime:
+  min_confidence: 0.75
+  stop_loss_pct: 0.15      # WIDER stops (was 12%)
+  take_profit_pct: 0.30    # Let winners run (was 25%)
+  max_leverage: 1.5
+  min_leverage: 1.0
+  trade_frequency: "aggressive"
+
+neutral_regime:
+  min_confidence: 0.95     # Essentially OFF (was 0.75)
+  stop_loss_pct: 0.10
+  take_profit_pct: 0.15
+  max_leverage: 0.1        # Minimal (was 0.7)
+  min_leverage: 0.1
+  trade_frequency: "defensive"
+
+bearish_regime:
+  min_confidence: 0.99     # Essentially OFF
+  stop_loss_pct: 0.08
+  take_profit_pct: 0.12
+  max_leverage: 0.0        # ZERO - sit in cash
+  min_leverage: 0.0
+  trade_frequency: "defensive"
+
+swap_enabled: false        # Don't churn in bad conditions
+swap_confidence_gap: 0.20
+
+trailing_stop_enabled: true
+trailing_stop_activation: 0.15  # Tighter activation
+trailing_stop_distance: 0.08    # Wider trail
+
+avoid_earnings: true
+earnings_window_days: 3
+block_high_vix_trades: true
+max_vix_for_entry: 20      # STRICT - only low VIX (was 25)
+
+print_monthly_summary: true
+save_equity_curve: true
+save_trade_log: true
